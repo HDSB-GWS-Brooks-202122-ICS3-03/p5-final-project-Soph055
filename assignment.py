@@ -23,10 +23,18 @@ import copy
 
 ctypes.windll.user32.SetProcessDPIAware()
 
+# a list with images of zombie walking
+zombWalk =[pygame.image.load("images\Walk_1.png"),pygame.image.load("images\Walk_2.png"),
+           pygame.image.load("images\Walk_3.png"),pygame.image.load("images\Walk_4.png"),
+           pygame.image.load("images\Walk_5.png"),pygame.image.load("images\Walk_6.png"),
+           pygame.image.load("images\Walk_7.png"),pygame.image.load("images\Walk_8.png"),
+           pygame.image.load("images\Walk_9.png"),pygame.image.load("images\Walk_10.png")]
+
+
 class Player(): # player class
     def __init__(self):
         
-        self.image = pygame.image.load("images/man.png") # loads image on player
+        self.image = pygame.image.load("images/man.png") # loads image of player
         self.rect = [34,150, 112,62] # creates rect (points from paint)
         self.pos = [100,510] # position
         self.speed = 1 #player speed 
@@ -56,10 +64,42 @@ class Player(): # player class
         screen.blit(tempSurface, self.pos) # draws screen
 
 class Zombie():
-    def __init__(self,Image,xPos,yPos):
-        self.image = Image
-        self.pos = [xPos,yPos]
+    def __init__(self,xPos,yPos,speed):
         
+        self.rect = [0,0,521,576] # rect of image, from paint
+        self.pos = [xPos,yPos] # sets y and x coords to number inputted when creating zombie
+        self.speed = speed # sets speed to inputed speed
+        self.move = True # zombie is moving is true
+        self.moveFrame = 0 # represents which number of frame from list will be shown 
+#         self.image = pygame.transform.scale2x(self.image) # makes sprite 2x bigger
+        
+        # image animation variables
+        self.frameRate = 10 # frame rate for animation
+        self.frameCount = 0
+        
+    def walk(self,screen):
+        if self.move == True: # if zombie is moving 
+            self.image = zombWalk[self.moveFrame] # draws certain image from list depending on number that moveframe is at the time
+            self.pos[0] -= self.speed # makes zombie move left
+            scale = 0.5
+            self.image = pygame.transform.smoothscale(screen,(scale*521,scale*576))
+            
+            
+    def update(self):
+       if self.moveFrame > 8: # if moveframe is greater than 8, sets back to 0 
+           self.moveFrame = 0
+       elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
+            self.moveFrame += 1 # adds 1 to move frame 
+            return ###why is this needed not sure???? still works without djfsjfl 
+        
+    def draw(self, screen): # draws zombie
+       
+        tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
+        tempSurface.fill((255,255,255))             # makes black background colour for temp surface
+        tempSurface.set_colorkey((255,255,255))     #Set the color black to be transparent
+        tempSurface.blit(self.image, (0,0),  self.rect) # on temp surface draws image
+        screen.blit(tempSurface, self.pos) # draws screen
+
 
 class Background(): # background screens class
     def __init__(self, Image, xPos, yPos): # object variables
@@ -84,10 +124,12 @@ def main():
     clock = pygame.time.Clock()  #Force frame rate to be slower
     screen = pygame.display.set_mode((surfaceSize, surfaceSize2)) # creates screen
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
+    
     frameCount = 0 # keep track of frames
     
-    
+    zombie = Zombie(700,400,0.5) # creates zombie from zombie class
     player = Player() # creates player from Playerclass
+
     gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using information inputted
 
    
@@ -131,10 +173,14 @@ def main():
         gameScreen.draw(screen)
         player.draw(screen)
         player.walk()
-        
+
+        zombie.walk(screen)
+        zombie.update()
+        zombie.draw(screen)
         pygame.display.flip()
         
-        frameCount += 1
+        zombie.frameCount += 1 #adds one every tick # NOT 100 PERCENT SURE
+        frameCount += 1 # adds one every tick
         clock.tick(60) #Force frame rate to be slower
 
     pygame.quit()     # Once we leave the loop, close the window.

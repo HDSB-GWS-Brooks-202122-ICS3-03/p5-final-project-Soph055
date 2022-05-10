@@ -81,8 +81,8 @@ class Zombie():
         if self.move == True: # if zombie is moving 
             self.image = zombWalk[self.moveFrame] # draws certain image from list depending on number that moveframe is at the time
             self.pos[0] -= self.speed # makes zombie move left
-            scale = 0.5
-            self.image = pygame.transform.smoothscale(screen,(scale*521,scale*576))
+#             scale = 0.5
+#             self.image = pygame.transform.smoothscale(screen,(scale*521,scale*576))
             
             
     def update(self):

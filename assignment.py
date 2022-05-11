@@ -20,7 +20,7 @@ import math
 import random
 from pygame import mixer
 import copy
-
+ 
 ctypes.windll.user32.SetProcessDPIAware()
 
 # a list with images of zombie walking
@@ -37,7 +37,7 @@ class Player(): # player class
         self.rect = [34,150, 112,62] # creates rect (points from paint)
         self.pos = [100,510] # position
         self.speed = 1 #player speed 
-        self.direction = "Right" # direction
+        self.direction = "Right" # players direction
         self.move = False # player cannot move initially
         self.shoot = False # player is not shooting gun
         
@@ -60,25 +60,25 @@ class Player(): # player class
         tempSurface.set_colorkey((1,255,1))     #Set the color black to be transparent
         tempSurface.blit(self.image, (0,0),  self.rect) # on temp surface draws image
         
-        if self.direction == "Left":
+        if self.direction == "Left": # if direction is left
             tempSurface = pygame.transform.flip(tempSurface,True,False) # flips horizontally but not vertically
         screen.blit(tempSurface, self.pos) # draws screen
         
-class Bullet():
+class Bullet(): # bullet class
     def __init__(self):
-        self.image = pygame.image.load("images/bullet.png")
-        self.rect = [0,0,23,12]
-        self.posx = 30
-        self.posy = 529
-        self.speed = 20
-        self.state = "Ready"
+        self.image = pygame.image.load("images/bullet.png") #loads image of bullet
+        self.rect = [0,0,23,12] # bullet rect points from paint
+        self.posx = 30 # x position
+        self.posy = 529 # y position
+        self.speed = 5 # speed of bullet
+        self.state = "Ready" # bullet state
         
     def shoot(self,screen,x,y):
-        if self.posx > 800:
-            self.posx = 30
-            self.state = "Ready"
-        elif self.state == "Fire":
-            self.posx  += self.speed
+        if self.posx >= 799  : # if x of bullet bigger than screensize
+            self.posx = 30 # set x back to 30 
+            self.state = "Ready" # sets state back to ready
+        elif self.state == "Fire": # if bullet state fire..
+            self.posx  += self.speed # adds speed of bullet to x positon 
             tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
             tempSurface.fill((255,255,255))             # makes white background colour for temp surface
             tempSurface.set_colorkey((255,255,255))     #Set the color white to be transparent
@@ -88,15 +88,13 @@ class Bullet():
     
     
         
-class Zombie():
+class Zombie():  # zombie class 
     def __init__(self,xPos,yPos,speed):
-        
         self.rect = [0,0,131,144] # rect of image, from paint
         self.pos = [xPos,yPos] # sets y and x coords to number inputted when creating zombie
         self.speed = speed # sets speed to inputed speed
         self.move = True # zombie is moving is true
-        self.moveFrame = 0 # represents which number of frame from list will be shown 
-#         self.image = pygame.transform.scale2x(self.image) # makes sprite 2x bigger
+        self.moveFrame = 0 # represents which number of frame from list will be shown
         
         # image animation variables
         self.frameRate = 10 # frame rate for animation
@@ -105,7 +103,7 @@ class Zombie():
     def walk(self,screen):
         if self.move == True: # if zombie is moving 
             self.image = zombWalk[self.moveFrame] # draws certain image from list depending on number that moveframe is at the time
-            self.pos[0] -= self.speed # makes zombie move left
+            self.pos[0] -= self.speed # makes zombie move left by subtracting speed
             
             
     def update(self):
@@ -113,7 +111,7 @@ class Zombie():
            self.moveFrame = 0
        elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
             self.moveFrame += 1 # adds 1 to move frame 
-            return ###why is this needed not sure???? still works without djfsjfl 
+#             return 
         
     def draw(self, screen): # draws zombie
        
@@ -152,9 +150,8 @@ def main():
     
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Playerclass
-    bullet = Bullet()
+    bullet = Bullet() # creates bullet from Bullet class
  
-
     gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using information inputted
 
    
@@ -168,19 +165,18 @@ def main():
             break                   # leave game loop
         elif ev.type == pygame.KEYDOWN:          # if key down..
             if ev.key == pygame.K_a or ev.key == pygame.K_LEFT: # if pressing left key/a..
-                player.direction = "Left" # sets direction to left
-                player.move = True # sets movement to true
+                player.direction = "Left" # sets player direction to left
+                player.move = True # sets player movement to true
             elif ev.key == pygame.K_d or ev.key == pygame.K_RIGHT: # if pressing right key/d
-                player.direction = "Right" # sets direction to right
-                player.move = True #sets movement to true
+                player.direction = "Right" # sets player direction to right
+                player.move = True #sets player movement to true
             elif ev.key == pygame.K_SPACE:# if space button pressed
-                if player.direction == "Right":
-                    bullet.state = "Fire"
+                if player.direction == "Right": # if player is looking right
+                    bullet.state = "Fire" # bullet state is change to fire
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
                     pass
-                
         elif ev.type == pygame.KEYUP: # if key up...
-            player.move = False # sets movement to false
+            player.move = False # sets player movement to false
           
             
             
@@ -199,7 +195,15 @@ def main():
             player.patchNumber = 4
             player.rect =[448,150, 112,62] 
                 
-            print(f"Patch Number: {player.patchNumber}   Image Rect: {player.rect}  ")
+    #----------------------Game collision----------------------------#
+        print(pygame.mouse.get_pos(), bullet.posx,zombie.pos[0])
+        if player.pos[0] + bullet.posx >= zombie.pos[0]:
+            print("bullet hit zombie")
+            bullet.state = "Ready"
+            bullet.posx = 30
+            #add code where its like zombieKilled += 1:
+            
+            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position 
             
   #----------------------Draw all the images----------------------------#
         gameScreen.draw(screen)

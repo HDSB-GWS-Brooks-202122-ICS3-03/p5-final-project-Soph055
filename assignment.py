@@ -155,7 +155,7 @@ class Background(): # background screens class
     def __init__(self, Image, xPos, yPos): # object variables
     # Parameters
      # ----------
-     # image??????????????????????????????????????????????????????? ask for help
+     # image : ?
      # xPos : int
      # yPos : int
      
@@ -163,7 +163,7 @@ class Background(): # background screens class
      #-------
      # ????????
         self.image = Image # self image is set to whatever image inputed when creating object
-        self.pos = [xPos, yPos] # self position is set to number inputed from object variable  ####FIX THIS COMMENT DONT FORGET YAYAYAYYA
+        self.pos = [xPos, yPos] # self position is set to number inputed from object variable 
         
     def draw(self,screen):
     # Parameters
@@ -190,10 +190,14 @@ def main():
     clock = pygame.time.Clock()  #Force frame rate to be slower
     screen = pygame.display.set_mode((surfaceSize, surfaceSize2)) # creates screen
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
+    font = pygame.font.SysFont("Arial", 20)  #Creates a font object
+    
+   
     
     frameCount = 0 # keep track of frames
     # game screen variables
     zombiesLeft = 20
+#     zombLeft = (f'zombies left : {zombiesLeft}')
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Playerclass
     bullet = Bullet() # creates bullet from Bullet class
@@ -226,7 +230,10 @@ def main():
           
             
             
-            
+        renderedText = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text
+        
+        print(f'{zombiesLeft}')
+   
             
    #----------------------Game Logic Goes After Here----------------------------#           
         if player.move == True: # if player can move           
@@ -242,7 +249,7 @@ def main():
             player.rect =[448,150, 112,62] 
                 
     #----------------------Game collision----------------------------#
-        print(pygame.mouse.get_pos(), bullet.posx,zombie.pos[0])
+        
         if player.pos[0] + bullet.posx >= zombie.pos[0]:
             print("bullet hit zombie")
             bullet.state = "Ready"
@@ -250,10 +257,10 @@ def main():
             zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
             
             zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
-            zombie.speed = (random.randint(1,11)) # gives zombie random speed 
-            
+            zombie.speed = (random.randint(1,11)) # gives zombie random speed
+                    
   #----------------------Draw all the images----------------------------#
-            
+#              renderedText = font.render(play, 1, pygame.Color(51,0,0)) #displays text
         gameScreen.draw(screen)
         bullet.shoot(screen,player.pos[0] +bullet.posx,bullet.posy)
         player.draw(screen)
@@ -262,6 +269,7 @@ def main():
         zombie.walk(screen)
         zombie.update()
         zombie.draw(screen)
+        screen.blit(renderedText, (40,110)) # displays it on specific coords
         
     
         pygame.display.flip()

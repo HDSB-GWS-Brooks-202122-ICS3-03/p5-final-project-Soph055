@@ -19,7 +19,7 @@ import ctypes
 import math
 import random
 from pygame import mixer
-import copy
+
  
 ctypes.windll.user32.SetProcessDPIAware()
 
@@ -44,7 +44,7 @@ class Player(): # player class
         self.image = pygame.image.load("images/man.png") # loads image of player
         self.rect = [34,150, 112,62] # creates rect (points from paint)
         self.pos = [100,510] # position
-        self.speed = 1 #player speed 
+        self.speed = 3 #player speed 
         self.direction = "Right" # players direction
         self.move = False # player cannot move initially
         self.shoot = False # player is not shooting gun
@@ -92,7 +92,7 @@ class Bullet(): # bullet class
         self.rect = [0,0,23,12] # bullet rect points from paint
         self.posx = 30 # x position
         self.posy = 529 # y position
-        self.speed = 5 # speed of bullet
+        self.speed = 10 # speed of bullet
         self.state = "Ready" # bullet state
         
     def shoot(self,screen,x,y):
@@ -173,6 +173,7 @@ class Background(): # background screens class
      # Returns
      #-------
      # draws screen
+     
         screen.blit(self.image, self.pos) #draws screen 
     
     
@@ -190,18 +191,15 @@ def main():
     clock = pygame.time.Clock()  #Force frame rate to be slower
     screen = pygame.display.set_mode((surfaceSize, surfaceSize2)) # creates screen
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
-    font = pygame.font.SysFont("Arial", 20)  #Creates a font object
-    
-   
-    
+    font = pygame.font.SysFont("Arial", 15)  #Creates a font object
     frameCount = 0 # keep track of frames
+    
     # game screen variables
-    zombiesLeft = 20
-#     zombLeft = (f'zombies left : {zombiesLeft}')
+    life = 3 # number of lives player has
+    zombiesLeft = 20 # number of zombies left to kill to win game
     zombie = Zombie(700,425,1) # creates zombie from zombie class
-    player = Player() # creates player from Playerclass
+    player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
- 
     gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using information inputted
 
    
@@ -227,14 +225,8 @@ def main():
                     pass
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
+            
           
-            
-            
-        renderedText = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text
-        
-        print(f'{zombiesLeft}')
-   
-            
    #----------------------Game Logic Goes After Here----------------------------#           
         if player.move == True: # if player can move           
             if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
@@ -250,26 +242,36 @@ def main():
                 
     #----------------------Game collision----------------------------#
         
-        if player.pos[0] + bullet.posx >= zombie.pos[0]:
+        if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal to zombie x... if bullet hits zombie
             print("bullet hit zombie")
-            bullet.state = "Ready"
-            bullet.posx = 30
+            bullet.state = "Ready" #sets bullet to idle ready state
+            bullet.posx = 30 # resets bullet position x
             zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
             
             zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
             zombie.speed = (random.randint(1,11)) # gives zombie random speed
+        elif player.pos[0] + 40 >= zombie.pos[0]: # if player x is equal to zombie x... if zombie touches player
+            print("lost a life")
+            life -=1 #lose one life
+            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
+            zombie.speed = (random.randint(1,11)) # gives zombie random speed
+            
                     
   #----------------------Draw all the images----------------------------#
-#              renderedText = font.render(play, 1, pygame.Color(51,0,0)) #displays text
+        lives = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text
+        remaining = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text
+
         gameScreen.draw(screen)
-        bullet.shoot(screen,player.pos[0] +bullet.posx,bullet.posy)
+        bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
         player.draw(screen)
         player.walk()
 
         zombie.walk(screen)
         zombie.update()
         zombie.draw(screen)
-        screen.blit(renderedText, (40,110)) # displays it on specific coords
+        
+        screen.blit(lives, (80,110)) # displays it on specific coords
+        screen.blit(remaining, (100,140)) # displays it on specific coords
         
     
         pygame.display.flip()

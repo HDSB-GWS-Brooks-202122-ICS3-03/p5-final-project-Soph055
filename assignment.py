@@ -33,6 +33,14 @@ zombWalk =[pygame.image.load("images\Walk_1.png"),pygame.image.load("images\Walk
 
 class Player(): # player class
     def __init__(self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none 
+        
         self.image = pygame.image.load("images/man.png") # loads image of player
         self.rect = [34,150, 112,62] # creates rect (points from paint)
         self.pos = [100,510] # position
@@ -47,6 +55,13 @@ class Player(): # player class
         self.FrameRate = 10 # frame rate for player animation
     
     def walk (self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
         if (self.move): # if player can move 
             if self.direction == "Right": # if moving right
                 self.pos[0] += self.speed # move right on x axis
@@ -66,6 +81,13 @@ class Player(): # player class
         
 class Bullet(): # bullet class
     def __init__(self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
         self.image = pygame.image.load("images/bullet.png") #loads image of bullet
         self.rect = [0,0,23,12] # bullet rect points from paint
         self.posx = 30 # x position
@@ -107,6 +129,13 @@ class Zombie():  # zombie class
             
             
     def update(self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
        if self.moveFrame > 8: # if moveframe is greater than 8, sets back to 0 
            self.moveFrame = 0
        elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
@@ -124,10 +153,26 @@ class Zombie():  # zombie class
 
 class Background(): # background screens class
     def __init__(self, Image, xPos, yPos): # object variables
+    # Parameters
+     # ----------
+     # image??????????????????????????????????????????????????????? ask for help
+     # xPos : int
+     # yPos : int
+     
+     # Returns
+     #-------
+     # ????????
         self.image = Image # self image is set to whatever image inputed when creating object
         self.pos = [xPos, yPos] # self position is set to number inputed from object variable  ####FIX THIS COMMENT DONT FORGET YAYAYAYYA
         
-    def draw(self,screen): 
+    def draw(self,screen):
+    # Parameters
+     # ----------
+     # screen : string
+     
+     # Returns
+     #-------
+     # draws screen
         screen.blit(self.image, self.pos) #draws screen 
     
     
@@ -147,7 +192,8 @@ def main():
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
     
     frameCount = 0 # keep track of frames
-    
+    # game screen variables
+    zombiesLeft = 20
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Playerclass
     bullet = Bullet() # creates bullet from Bullet class
@@ -201,11 +247,13 @@ def main():
             print("bullet hit zombie")
             bullet.state = "Ready"
             bullet.posx = 30
-            #add code where its like zombieKilled += 1:
+            zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
             
-            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position 
+            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
+            zombie.speed = (random.randint(1,11)) # gives zombie random speed 
             
   #----------------------Draw all the images----------------------------#
+            
         gameScreen.draw(screen)
         bullet.shoot(screen,player.pos[0] +bullet.posx,bullet.posy)
         player.draw(screen)
@@ -218,7 +266,7 @@ def main():
     
         pygame.display.flip()
         
-        zombie.frameCount += 1 #adds one every tick # NOT 100 PERCENT SURE
+        zombie.frameCount += 1 #adds one every tick 
         frameCount += 1 # adds one every tick
         clock.tick(60) #Force frame rate to be slower
 

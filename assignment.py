@@ -173,7 +173,6 @@ class Background(): # background screens class
      # Returns
      #-------
      # draws screen
-     
         screen.blit(self.image, self.pos) #draws screen 
     
     
@@ -193,6 +192,7 @@ def main():
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
     font = pygame.font.SysFont("Arial", 15)  #Creates a font object
     frameCount = 0 # keep track of frames
+    gameState = "Start" # keeps track of what screen to display
     
     # game screen variables
     life = 3 # number of lives player has
@@ -225,53 +225,75 @@ def main():
                     pass
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
+        
+        if gameState == "Start":
+            screen.fill((100,200,90))
+        
+        
+        
+        elif gameState =="Game":  # if game state is game..
+        
+       #----------------------Game Logic Goes After Here----------------------------#           
+            if player.move == True: # if player can move           
+                if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
+                    if (player.patchNumber < player.numPatches-1) :
+                        player.patchNumber += 1
+                        player.rect[0] += player.rect[2]  #Shifts the "display window" to the right along the man.png sheet by the width of the image
+                    else:
+                        player.patchNumber = 0           #Reset back to first patch
+                        player.rect[0] -= player.rect[2]*(player.numPatches-1)  #Reset the rect position of the rect back too
+            elif player.move == False:# if player cannot move, set to patch 4 so it looks like man is standing straight
+                 player.patchNumber = 4
+                 player.rect =[448,150, 112,62]
             
-          
-   #----------------------Game Logic Goes After Here----------------------------#           
-        if player.move == True: # if player can move           
-            if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
-                if (player.patchNumber < player.numPatches-1) :
-                    player.patchNumber += 1
-                    player.rect[0] += player.rect[2]  #Shifts the "display window" to the right along the man.png sheet by the width of the image
-                else:
-                    player.patchNumber = 0           #Reset back to first patch
-                    player.rect[0] -= player.rect[2]*(player.numPatches-1)  #Reset the rect position of the rect back too
-        elif player.move == False:# if player cannot move, set to patch 4 so it looks like man is standing straight
-            player.patchNumber = 4
-            player.rect =[448,150, 112,62] 
+            if life == 0: #if no lives left
+                gameState = "Lose" # switches to lose screen
+            elif zombiesLeft == 0: # if no zombies left
+                gameState = "Win" # switches to win screen
                 
-    #----------------------Game collision----------------------------#
-        
-        if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal to zombie x... if bullet hits zombie
-            print("bullet hit zombie")
-            bullet.state = "Ready" #sets bullet to idle ready state
-            bullet.posx = 30 # resets bullet position x
-            zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
+        #----------------------Game collision----------------------------#
+ 
+            # zombie collison 
+            if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal to zombie x... if bullet hits zombie
+                bullet.state = "Ready" #sets bullet to idle ready state
+                bullet.posx = 30 # resets bullet position x
+                zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
+                zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
+                zombie.speed = (random.randint(1,11)) # gives zombie random speed
+                
+            elif player.pos[0] + 40 >= zombie.pos[0]: # if player x is equal to zombie x... if zombie touches player
+                life -=1 #lose one life
+                zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
+                zombie.speed = (random.randint(1,11)) # gives zombie random speed  
             
-            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
-            zombie.speed = (random.randint(1,11)) # gives zombie random speed
-        elif player.pos[0] + 40 >= zombie.pos[0]: # if player x is equal to zombie x... if zombie touches player
-            print("lost a life")
-            life -=1 #lose one life
-            zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
-            zombie.speed = (random.randint(1,11)) # gives zombie random speed
+            # screen collison    
+            elif player.pos[0] >= 694: # if player x pos greater then screen size
+                 player.pos[0] = 694 # sets positon to number so player cant move past screen
+                 
+            elif player.pos[0] <= 1: # if player x pos smalled then screen size
+                player.pos[0] = 1 # sets positon to number so player cant move past screen
+                              
+      #----------------------Draw all the images----------------------------#
+            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
+            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
+
+            gameScreen.draw(screen)
+            bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
+            player.draw(screen)
+            player.walk()
+
+            zombie.walk(screen)
+            zombie.update()
+            zombie.draw(screen)
             
-                    
-  #----------------------Draw all the images----------------------------#
-        lives = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text
-        remaining = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text
-
-        gameScreen.draw(screen)
-        bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
-        player.draw(screen)
-        player.walk()
-
-        zombie.walk(screen)
-        zombie.update()
-        zombie.draw(screen)
-        
-        screen.blit(lives, (80,110)) # displays it on specific coords
-        screen.blit(remaining, (100,140)) # displays it on specific coords
+            screen.blit(remaining, (80,110)) # displays it on specific coords
+            screen.blit(lives, (100,140)) # displays it on specific coords
+            
+        elif gameState == "Win":
+            screen.fill((100,0,50))
+            
+        elif gameState == "Lose":
+            screen.fill((0,100,50))
         
     
         pygame.display.flip()

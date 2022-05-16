@@ -175,7 +175,9 @@ class Background(): # background screens class
      # draws screen
         screen.blit(self.image, self.pos) #draws screen 
     
-    
+class Buttons():
+    def __init__(self):
+        pass        
     
     
     
@@ -192,7 +194,7 @@ def main():
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
     font = pygame.font.SysFont("Arial", 15)  #Creates a font object
     frameCount = 0 # keep track of frames
-    gameState = "Start" # keeps track of what screen to display
+    gameState = "Start" # intial game state
     
     # game screen variables
     life = 3 # number of lives player has
@@ -201,7 +203,9 @@ def main():
     player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
     gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using information inputted
-
+    
+    #start screen variables
+    startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
    
     
     
@@ -227,7 +231,7 @@ def main():
             player.move = False # sets player movement to false
         
         if gameState == "Start":
-            screen.fill((100,200,90))
+            startScreen.draw(screen)
         
         
         

@@ -16,7 +16,6 @@
 
 import pygame
 import ctypes
-import math
 import random
 from pygame import mixer
 
@@ -24,11 +23,11 @@ from pygame import mixer
 ctypes.windll.user32.SetProcessDPIAware()
 
 # a list with images of zombie walking
-zombWalk =[pygame.image.load("images\Walk_1.png"),pygame.image.load("images\Walk_2.png"),
-           pygame.image.load("images\Walk_3.png"),pygame.image.load("images\Walk_4.png"),
-           pygame.image.load("images\Walk_5.png"),pygame.image.load("images\Walk_6.png"),
-           pygame.image.load("images\Walk_7.png"),pygame.image.load("images\Walk_8.png"),
-           pygame.image.load("images\Walk_9.png"),pygame.image.load("images\Walk_10.png")]
+zombWalk =[pygame.image.load("images/Walk_1.png"),pygame.image.load("images/Walk_2.png"),
+           pygame.image.load("images/Walk_3.png"),pygame.image.load("images/Walk_4.png"),
+           pygame.image.load("images/Walk_5.png"),pygame.image.load("images/Walk_6.png"),
+           pygame.image.load("images/Walk_7.png"),pygame.image.load("images/Walk_8.png"),
+           pygame.image.load("images/Walk_9.png"),pygame.image.load("images/Walk_10.png")]
 
 
 class Player(): # player class
@@ -122,7 +121,7 @@ class Zombie():  # zombie class
         self.frameRate = 10 # frame rate for animation
         self.frameCount = 0
         
-    def walk(self,screen):
+    def walk(self):
         if self.move == True: # if zombie is moving 
             self.image = zombWalk[self.moveFrame] # draws certain image from list depending on number that moveframe is at the time
             self.pos[0] -= self.speed # makes zombie move left by subtracting speed
@@ -136,12 +135,12 @@ class Zombie():  # zombie class
      # Returns
      #-------
      # none
-       if self.moveFrame > 8: # if moveframe is greater than 8, sets back to 0 
-           self.moveFrame = 0
-       elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
-            self.moveFrame += 1 # adds 1 to move frame 
-#             return 
-        
+     
+        if self.moveFrame > 8: # if moveframe is greater than 8, sets back to 0 
+            self.moveFrame = 0
+        elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
+            self.moveFrame += 1 # adds 1 to move frame
+            
     def draw(self, screen): # draws zombie
        
         tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
@@ -153,7 +152,7 @@ class Zombie():  # zombie class
 
 class Background(): # background screens class
     def __init__(self, Image, xPos, yPos): # object variables
-    # Parameters
+     # Parameters
      # ----------
      # image : ?
      # xPos : int
@@ -161,12 +160,12 @@ class Background(): # background screens class
      
      # Returns
      #-------
-     # ????????
+     # none???
         self.image = Image # self image is set to whatever image inputed when creating object
         self.pos = [xPos, yPos] # self position is set to number inputed from object variable 
         
     def draw(self,screen):
-    # Parameters
+     # Parameters
      # ----------
      # screen : string
      
@@ -177,10 +176,9 @@ class Background(): # background screens class
     
 class Buttons():
     def __init__(self, left, top, width, height, colour):
-        
         self.size = [left, top, width, height]
         self.colour = colour
-        
+   
         
     def draw(self, screen):
         pygame.draw.rect(screen, self.colour, self.size)
@@ -213,8 +211,8 @@ def main():
     
     #start screen variables
     startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
-    startButton = Buttons(250,250, 300, 75 ,(100,50,39))
-    helpButton = Buttons(250,450, 300, 75 ,(100,50,39))
+    startButton = Buttons(250,250, 300, 75 ,(14,23,28))
+    helpButton = Buttons(250,450, 300, 75 ,(14,23,28))
     
     
     #-----------------------------Main Game Loop----------------------------------------#
@@ -235,10 +233,15 @@ def main():
                     bullet.state = "Fire" # bullet state is change to fire
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
                     pass
+
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
         
         if gameState == "Start":
+        #----------------------collision----------------------------#
+            if (pygame.mouse.get_pos()[0]>= startButton.size[0]) and (pygame.mouse.get_pos()[0]<= startButton.size[0] + startButton.size[2]):
+                print ("yeah u work") ### ADD FOR HEIGHT ASWELL  AND TRY TO SEE IF U CAN MAKE THIS IN A CLASS ASWELL!!
+        #----------------------drawing----------------------------# 
             startScreen.draw(screen)
             startButton.draw(screen)
             helpButton.draw(screen)
@@ -247,7 +250,7 @@ def main():
         
         elif gameState =="Game":  # if game state is game..
         
-       #----------------------Game Logic Goes After Here----------------------------#           
+        #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
                 if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
                     if (player.patchNumber < player.numPatches-1) :
@@ -257,8 +260,8 @@ def main():
                         player.patchNumber = 0           #Reset back to first patch
                         player.rect[0] -= player.rect[2]*(player.numPatches-1)  #Reset the rect position of the rect back too
             elif player.move == False:# if player cannot move, set to patch 4 so it looks like man is standing straight
-                 player.patchNumber = 4
-                 player.rect =[448,150, 112,62]
+                player.patchNumber = 4
+                player.rect =[448,150, 112,62]
             
             if life == 0: #if no lives left
                 gameState = "Lose" # switches to lose screen
@@ -282,12 +285,12 @@ def main():
             
             # screen collison    
             elif player.pos[0] >= 694: # if player x pos greater then screen size
-                 player.pos[0] = 694 # sets positon to number so player cant move past screen
+                player.pos[0] = 694 # sets positon to number so player cant move past screen
                  
             elif player.pos[0] <= 1: # if player x pos smalled then screen size
                 player.pos[0] = 1 # sets positon to number so player cant move past screen
                               
-      #----------------------Draw all the images----------------------------#
+        #----------------------Draw all the images----------------------------#
             remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
             lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
 
@@ -296,7 +299,7 @@ def main():
             player.draw(screen)
             player.walk()
 
-            zombie.walk(screen)
+            zombie.walk()
             zombie.update()
             zombie.draw(screen)
             

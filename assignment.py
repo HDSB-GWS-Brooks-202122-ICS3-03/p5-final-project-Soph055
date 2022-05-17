@@ -176,8 +176,15 @@ class Background(): # background screens class
         screen.blit(self.image, self.pos) #draws screen 
     
 class Buttons():
-    def __init__(self):
-        pass        
+    def __init__(self, left, top, width, height, colour):
+        
+        self.size = [left, top, width, height]
+        self.colour = colour
+        
+        
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, self.size)
+                
     
     
     
@@ -206,7 +213,8 @@ def main():
     
     #start screen variables
     startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
-   
+    startButton = Buttons(250,250, 300, 75 ,(100,50,39))
+    helpButton = Buttons(250,450, 300, 75 ,(100,50,39))
     
     
     #-----------------------------Main Game Loop----------------------------------------#
@@ -232,6 +240,8 @@ def main():
         
         if gameState == "Start":
             startScreen.draw(screen)
+            startButton.draw(screen)
+            helpButton.draw(screen)
         
         
         

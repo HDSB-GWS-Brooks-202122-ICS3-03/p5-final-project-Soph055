@@ -178,10 +178,32 @@ class Buttons():
     def __init__(self, left, top, width, height, colour):
         self.size = [left, top, width, height]
         self.colour = colour
+        self.increaseWidth = self.size[3] + 20
+        self.increaseHeight = self.size[2] + 20
+        self.increaseTop = self.size[1] - 10
+        self.increaseLeft = self.size[0] - 10
    
         
     def draw(self, screen):
         pygame.draw.rect(screen, self.colour, self.size)
+        
+    def collide (self):
+        if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]):
+            if(pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]):
+                
+                self.size[0] = self.increaseLeft
+                self.size[1] = self.increaseTop
+                
+                self.size[2] = self.increaseHeight
+                self.size[3] = self.increaseWidth
+                
+            else:
+                    self.size[0] = self.increaseLeft + 10
+                    self.size[1] = self.increaseTop +10
+                    
+                    self.size[2] = self.increaseHeight - 20
+                    self.size[3] = self.increaseWidth - 20
+                    
                 
     
     
@@ -239,9 +261,12 @@ def main():
         
         if gameState == "Start":
         #----------------------collision----------------------------#
-            if (pygame.mouse.get_pos()[0]>= startButton.size[0]) and (pygame.mouse.get_pos()[0]<= startButton.size[0] + startButton.size[2]):
-                print ("yeah u work") ### ADD FOR HEIGHT ASWELL  AND TRY TO SEE IF U CAN MAKE THIS IN A CLASS ASWELL!!
-        #----------------------drawing----------------------------# 
+            startButton.collide()
+            helpButton.collide()
+            
+            
+        #----------------------drawing----------------------------#
+            
             startScreen.draw(screen)
             startButton.draw(screen)
             helpButton.draw(screen)

@@ -177,15 +177,11 @@ class Background(): # background screens class
 class Buttons():
     def __init__(self, left, top, width, height, colour):
         self.size = [left, top, width, height]
-        self.colour = colour
+        self.colour = colour 
         self.increaseWidth = self.size[3] + 20
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
         self.increaseLeft = self.size[0] - 10
-   
-        
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.colour, self.size)
         
     def collide (self):
         if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]):
@@ -197,18 +193,26 @@ class Buttons():
                 self.size[2] = self.increaseHeight
                 self.size[3] = self.increaseWidth
                 
+                
             else:
                     self.size[0] = self.increaseLeft + 10
                     self.size[1] = self.increaseTop +10
                     
                     self.size[2] = self.increaseHeight - 20
                     self.size[3] = self.increaseWidth - 20
+                   
                     
-                
-    
-    
-    
-    
+    def text(self, text,x,y):
+        self.text = (text)
+        self.x = x
+        self.y = y
+        ########NEED TO RIX
+        
+        
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, self.size)
+        screen.blit(pygame.font.SysFont("Arial", 70).render((self.text), 1, pygame.Color(100,0,0)),(self.x,self.y)) 
+#         screen.blit(fontGiant.render(('Zombie OutCry'), 1, pygame.Color(100,0,0)), (180,110))
 def main():
     #-----------------------------Setup------------------------------------------------#
     """ Set up the game and run the main game loop """
@@ -219,13 +223,18 @@ def main():
     clock = pygame.time.Clock()  #Force frame rate to be slower
     screen = pygame.display.set_mode((surfaceSize, surfaceSize2)) # creates screen
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
+    
     font = pygame.font.SysFont("Arial", 15)  #Creates a font object
+    fontGiant = pygame.font.SysFont("Arial", 70)  #Creates a font object
     frameCount = 0 # keep track of frames
     gameState = "Start" # intial game state
     
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
+    remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
+    lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
+    
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
@@ -235,6 +244,8 @@ def main():
     startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
     startButton = Buttons(250,250, 300, 75 ,(14,23,28))
     helpButton = Buttons(250,450, 300, 75 ,(14,23,28))
+    
+
     
     
     #-----------------------------Main Game Loop----------------------------------------#
@@ -267,9 +278,13 @@ def main():
             
         #----------------------drawing----------------------------#
             
+#            
+            startButton.text('hello',100,100)
             startScreen.draw(screen)
             startButton.draw(screen)
             helpButton.draw(screen)
+            screen.blit(fontGiant.render(('Zombie OutCry'), 1, pygame.Color(100,0,0)), (180,110)) # displays text on specific coords
+#             
         
         
         
@@ -316,9 +331,7 @@ def main():
                 player.pos[0] = 1 # sets positon to number so player cant move past screen
                               
         #----------------------Draw all the images----------------------------#
-            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
-            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
-
+                
             gameScreen.draw(screen)
             bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
             player.draw(screen)

@@ -177,7 +177,8 @@ class Background(): # background screens class
 class Buttons():
     def __init__(self, left, top, width, height, colour):
         self.size = [left, top, width, height]
-        self.colour = colour 
+        self.colour = colour
+#         self.textSize = 50
         self.increaseWidth = self.size[3] + 20
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
@@ -192,27 +193,21 @@ class Buttons():
                 
                 self.size[2] = self.increaseHeight
                 self.size[3] = self.increaseWidth
-                
-                
+#                 self.textSize = 60
+                             
             else:
-                    self.size[0] = self.increaseLeft + 10
-                    self.size[1] = self.increaseTop +10
-                    
-                    self.size[2] = self.increaseHeight - 20
-                    self.size[3] = self.increaseWidth - 20
-                   
-                    
-    def text(self, text,x,y):
-        self.text = (text)
-        self.x = x
-        self.y = y
-        ########NEED TO RIX
+                self.size[0] = self.increaseLeft + 10
+                self.size[1] = self.increaseTop +10
+                
+                self.size[2] = self.increaseHeight - 20
+                self.size[3] = self.increaseWidth - 20
+#                 self.textSize = 50
+               
+ 
         
         
     def draw(self, screen):
         pygame.draw.rect(screen, self.colour, self.size)
-        screen.blit(pygame.font.SysFont("Arial", 70).render((self.text), 1, pygame.Color(100,0,0)),(self.x,self.y)) 
-#         screen.blit(fontGiant.render(('Zombie OutCry'), 1, pygame.Color(100,0,0)), (180,110))
 def main():
     #-----------------------------Setup------------------------------------------------#
     """ Set up the game and run the main game loop """
@@ -225,6 +220,7 @@ def main():
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
     
     font = pygame.font.SysFont("Arial", 15)  #Creates a font object
+    fontMid = pygame.font.SysFont("Arial", 50)  #Creates a font object
     fontGiant = pygame.font.SysFont("Arial", 70)  #Creates a font object
     frameCount = 0 # keep track of frames
     gameState = "Start" # intial game state
@@ -278,13 +274,15 @@ def main():
             
         #----------------------drawing----------------------------#
             
-#            
-            startButton.text('hello',100,100)
+
             startScreen.draw(screen)
             startButton.draw(screen)
             helpButton.draw(screen)
-            screen.blit(fontGiant.render(('Zombie OutCry'), 1, pygame.Color(100,0,0)), (180,110)) # displays text on specific coords
-#             
+            screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
+            screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (340, 260)) # displays text on specific coords
+            
+                         
+       
         
         
         

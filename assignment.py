@@ -178,7 +178,6 @@ class Buttons():
     def __init__(self, left, top, width, height, colour):
         self.size = [left, top, width, height]
         self.colour = colour
-#         self.textSize = 50
         self.increaseWidth = self.size[3] + 20
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
@@ -193,7 +192,7 @@ class Buttons():
                 
                 self.size[2] = self.increaseHeight
                 self.size[3] = self.increaseWidth
-#                 self.textSize = 60
+
                              
             else:
                 self.size[0] = self.increaseLeft + 10
@@ -201,13 +200,10 @@ class Buttons():
                 
                 self.size[2] = self.increaseHeight - 20
                 self.size[3] = self.increaseWidth - 20
-#                 self.textSize = 50
-               
- 
-        
-        
+                      
     def draw(self, screen):
         pygame.draw.rect(screen, self.colour, self.size)
+        
 def main():
     #-----------------------------Setup------------------------------------------------#
     """ Set up the game and run the main game loop """
@@ -228,8 +224,7 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
-    lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
+    
     
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Player class
@@ -262,24 +257,42 @@ def main():
                     bullet.state = "Fire" # bullet state is change to fire
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
                     pass
-
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
+            
+        elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
+            #startscreen button collisions 
+            if gameState == "Start": # if on start screen...
+                if (pygame.mouse.get_pos()[0]>= startButton.size[0]) and (pygame.mouse.get_pos()[0]<= startButton.size[0] + startButton.size[2]): # if mouse x pos is in width of rectangle
+                    if(pygame.mouse.get_pos()[1] >= startButton.size[1]) and (pygame.mouse.get_pos()[1] <= startButton.size[1] + startButton.size[3]): # if mouse y pos is in height of rectangle
+                        gameState = "Game" #sets game state to start when clicked in rectangle
+                if (pygame.mouse.get_pos()[0]>= helpButton.size[0]) and (pygame.mouse.get_pos()[0]<= helpButton.size[0] + helpButton.size[2]): # if mouse x pos is in width of rectangle
+                    if(pygame.mouse.get_pos()[1] >= helpButton.size[1]) and (pygame.mouse.get_pos()[1] <= helpButton.size[1] + helpButton.size[3]): # if mouse y pos is in height of rectangle
+                        gameState = "Help" #sets game state to help when clicked in rectangle
+                        
+                    
+            elif gameState == "Win":
+                pass
+            elif gameState == "Lose":
+                pass
+                
         
         if gameState == "Start":
         #----------------------collision----------------------------#
-            startButton.collide()
+            startButton.collide()  
             helpButton.collide()
             
             
         #----------------------drawing----------------------------#
-            
-
             startScreen.draw(screen)
             startButton.draw(screen)
             helpButton.draw(screen)
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
             screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (340, 260)) # displays text on specific coords
+            screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (345, 460)) # displays text on specific coords
+            
+        elif gameState == "Help":
+            screen.fill((1,50,38))
             
                          
        
@@ -338,7 +351,8 @@ def main():
             zombie.walk()
             zombie.update()
             zombie.draw(screen)
-            
+            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
+            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
             screen.blit(remaining, (80,110)) # displays it on specific coords
             screen.blit(lives, (100,140)) # displays it on specific coords
             

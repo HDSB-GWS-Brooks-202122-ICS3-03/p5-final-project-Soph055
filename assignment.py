@@ -178,30 +178,33 @@ class Buttons():
     def __init__(self, left, top, width, height, colour):
         self.size = [left, top, width, height]
         self.colour = colour
-#         self.textSize = 50
+        self.touching = False
+
         self.increaseWidth = self.size[3] + 20
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
         self.increaseLeft = self.size[0] - 10
         
     def collide (self):
-        if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]):
-            if(pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]):
+        if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]) and (pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]) :
+#             if(pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]): # when tried putting in two lines, it would not wokmr
                 
-                self.size[0] = self.increaseLeft
-                self.size[1] = self.increaseTop
-                
-                self.size[2] = self.increaseHeight
-                self.size[3] = self.increaseWidth
-#                 self.textSize = 60
-                             
-            else:
-                self.size[0] = self.increaseLeft + 10
-                self.size[1] = self.increaseTop +10
-                
-                self.size[2] = self.increaseHeight - 20
-                self.size[3] = self.increaseWidth - 20
-#                 self.textSize = 50
+            self.size[0] = self.increaseLeft
+            self.size[1] = self.increaseTop
+            
+            self.size[2] = self.increaseHeight
+            self.size[3] = self.increaseWidth
+            self.touching = True
+
+                         
+        else:
+            self.size[0] = self.increaseLeft + 10
+            self.size[1] = self.increaseTop +10
+            
+            self.size[2] = self.increaseHeight - 20
+            self.size[3] = self.increaseWidth - 20
+            self.touching = False
+
                
  
         
@@ -228,8 +231,7 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
-    lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
+    
     
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Player class
@@ -240,6 +242,9 @@ def main():
     startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
     startButton = Buttons(250,250, 300, 75 ,(14,23,28))
     helpButton = Buttons(250,450, 300, 75 ,(14,23,28))
+    
+    #how to play varibles
+    helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using information inputted
     
 
     
@@ -262,11 +267,23 @@ def main():
                     bullet.state = "Fire" # bullet state is change to fire
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
                     pass
+        elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
+            #start button collision
+            if gameState == "Start": # if on start screen...
+                if startButton.touching == True: # if mouse clicked while on rectangle...
+                    gameState = "Game" # sets gamestate to game
+                elif helpButton.touching == True:# if mouse clicked while on rectangle...
+                    gameState = "Help" # sets gamestate to help
 
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
         
         if gameState == "Start":
+            # resets zombies and lives, player pos
+            player.pos[0] = 100
+            zombiesLeft = 20
+            lives = 3
+            
         #----------------------collision----------------------------#
             startButton.collide()
             helpButton.collide()
@@ -279,14 +296,18 @@ def main():
             startButton.draw(screen)
             helpButton.draw(screen)
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
-            screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (340, 260)) # displays text on specific coords
+            screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
+            screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
             
                          
        
         
         
+        elif gameState == "Help":
+            helpScreen.draw(screen)
         
-        elif gameState =="Game":  # if game state is game..
+            
+        elif gameState == "Game":  # if game state is game..
         
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
@@ -304,7 +325,10 @@ def main():
             if life == 0: #if no lives left
                 gameState = "Lose" # switches to lose screen
             elif zombiesLeft == 0: # if no zombies left
-                gameState = "Win" # switches to win screen
+                gameState = "Start" # switches to win screen  ####################WITCH TO WIN
+                
+                
+                
                 
         #----------------------Game collision----------------------------#
  
@@ -338,6 +362,9 @@ def main():
             zombie.walk()
             zombie.update()
             zombie.draw(screen)
+            
+            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
+            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
             
             screen.blit(remaining, (80,110)) # displays it on specific coords
             screen.blit(lives, (100,140)) # displays it on specific coords

@@ -245,9 +245,12 @@ def main():
     
     #how to play varibles
     helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using information inputted
-    
+    backButton = Buttons(250,450, 300, 75 ,(14,23,28))
 
-    
+    #lose screen variables
+    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100)
+    restartButton = Buttons(250,450, 300, 75 ,(14,23,28))
+   
     
     #-----------------------------Main Game Loop----------------------------------------#
     while True:
@@ -268,12 +271,16 @@ def main():
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
                     pass
         elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
-            #start button collision
+            # startscreen buttons collision
             if gameState == "Start": # if on start screen...
                 if startButton.touching == True: # if mouse clicked while on rectangle...
                     gameState = "Game" # sets gamestate to game
                 elif helpButton.touching == True:# if mouse clicked while on rectangle...
                     gameState = "Help" # sets gamestate to help
+            elif gameState == "Help": # help screen button collison... if on help screen
+                if backButton.touching == True: #if mouse clicked...
+                    gameState = "Start" # sets gamestate to start
+            
 
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
@@ -292,9 +299,9 @@ def main():
         #----------------------drawing----------------------------#
             
 
-            startScreen.draw(screen)
-            startButton.draw(screen)
-            helpButton.draw(screen)
+            startScreen.draw(screen) # displays image on screen
+            startButton.draw(screen) # displays button on screen
+            helpButton.draw(screen)  # displays button on screen
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
             screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
             screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
@@ -304,7 +311,14 @@ def main():
         
         
         elif gameState == "Help":
-            helpScreen.draw(screen)
+        #----------------------collision----------------------------#
+            backButton.collide()
+        #----------------------drawing----------------------------#    
+            
+            helpScreen.draw(screen) # displays image on screen
+            backButton.draw(screen) # displays button on screen
+            screen.blit(fontMid.render(('Back'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
+
         
             
         elif gameState == "Game":  # if game state is game..
@@ -373,7 +387,14 @@ def main():
             screen.fill((100,0,50))
             
         elif gameState == "Lose":
-            screen.fill((0,100,50))
+            
+            restartButton.collide()
+            
+            
+            loseScreen.draw(screen)
+            restartButton.draw(screen)
+            
+        
         
     
         pygame.display.flip()

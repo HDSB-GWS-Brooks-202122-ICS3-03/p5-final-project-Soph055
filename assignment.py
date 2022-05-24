@@ -290,22 +290,6 @@ def main():
 
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
-            
-        elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
-            #startscreen button collisions 
-            if gameState == "Start": # if on start screen...
-                if (pygame.mouse.get_pos()[0]>= startButton.size[0]) and (pygame.mouse.get_pos()[0]<= startButton.size[0] + startButton.size[2]): # if mouse x pos is in width of rectangle
-                    if(pygame.mouse.get_pos()[1] >= startButton.size[1]) and (pygame.mouse.get_pos()[1] <= startButton.size[1] + startButton.size[3]): # if mouse y pos is in height of rectangle
-                        gameState = "Game" #sets game state to start when clicked in rectangle
-                if (pygame.mouse.get_pos()[0]>= helpButton.size[0]) and (pygame.mouse.get_pos()[0]<= helpButton.size[0] + helpButton.size[2]): # if mouse x pos is in width of rectangle
-                    if(pygame.mouse.get_pos()[1] >= helpButton.size[1]) and (pygame.mouse.get_pos()[1] <= helpButton.size[1] + helpButton.size[3]): # if mouse y pos is in height of rectangle
-                        gameState = "Help" #sets game state to help when clicked in rectangle
-                        
-                    
-            elif gameState == "Win":
-                pass
-            elif gameState == "Lose":
-                pass
                 
         
         if gameState == "Start":

@@ -231,8 +231,6 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    
-    
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
@@ -277,9 +275,14 @@ def main():
                     gameState = "Game" # sets gamestate to game
                 elif helpButton.touching == True:# if mouse clicked while on rectangle...
                     gameState = "Help" # sets gamestate to help
-            elif gameState == "Help": # help screen button collison... if on help screen
-                if backButton.touching == True: #if mouse clicked...
+            #helpscreen button collision
+            elif gameState == "Help": #if on help screen
+                if backButton.touching == True: #if mouse clicked on rectangle
                     gameState = "Start" # sets gamestate to start
+            #lose/win screen button collison
+            elif gameState == "Lose" or "Win": # if on win or lose screen..
+                if restartButton.touching == True:# if mouse clicked on rectangle
+                    gameState = "Start" # sets gamestate to start screen
             
 
         elif ev.type == pygame.KEYUP: # if key up...
@@ -289,7 +292,7 @@ def main():
             # resets zombies and lives, player pos
             player.pos[0] = 100
             zombiesLeft = 20
-            lives = 3
+            life = 3
             
         #----------------------collision----------------------------#
             startButton.collide()
@@ -321,7 +324,7 @@ def main():
 
         
             
-        elif gameState == "Game":  # if game state is game..
+        elif gameState == "Game":  # if gamestate is game..
         
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
@@ -339,7 +342,7 @@ def main():
             if life == 0: #if no lives left
                 gameState = "Lose" # switches to lose screen
             elif zombiesLeft == 0: # if no zombies left
-                gameState = "Start" # switches to win screen  ####################WITCH TO WIN
+                gameState = "Win" # sets gamestate to win
                 
                 
                 
@@ -385,18 +388,15 @@ def main():
             
         elif gameState == "Win":
             screen.fill((100,0,50))
-            
+       #----------------------Draw all the images----------------------------#     
         elif gameState == "Lose":
-            
-            restartButton.collide()
-            
-            
-            loseScreen.draw(screen)
-            restartButton.draw(screen)
-            
-        
-        
     
+            restartButton.collide()
+       #----------------------Draw all the images----------------------------#                 
+            loseScreen.draw(screen) # draws image on screen
+            restartButton.draw(screen) # draws restart button on screen
+            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (300, 460)) # displays text on specific coords
+
         pygame.display.flip()
         
         zombie.frameCount += 1 #adds one every tick 

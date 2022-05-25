@@ -232,8 +232,6 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    
-    
     zombie = Zombie(700,425,1) # creates zombie from zombie class
     player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
@@ -248,9 +246,12 @@ def main():
     helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using information inputted
     backButton = Buttons(250,450, 300, 75 ,(14,23,28))
 
-    #lose screen variables
-    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100)
-    restartButton = Buttons(250,450, 300, 75 ,(14,23,28))
+    #lose screen  + win screen variables
+    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100) # creates loseScreen from background class using image, x , y inputted
+    winScreen = Background(pygame.image.load("images/win.jpg"), -90, -150)
+    restartButton = Buttons(250,450, 300, 75 ,(14,23,28)) # creates a restartbutton from Buttons class using x,y,width,height inputted
+    
+    
    
     
     #-----------------------------Main Game Loop----------------------------------------#
@@ -328,7 +329,7 @@ def main():
 
         
             
-        elif gameState == "Game":  # if gamestate is game..
+        elif gameState == "Game":  # if gamestate is game
         
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
@@ -391,7 +392,12 @@ def main():
             screen.blit(lives, (100,140)) # displays it on specific coords
             
         elif gameState == "Win":
-            screen.fill((100,0,50))
+            
+            restartButton.collide()
+            
+            winScreen.draw(screen)
+            restartButton.draw(screen) # draws restart button on screen
+            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
        #----------------------Draw all the images----------------------------#     
         elif gameState == "Lose":
     
@@ -399,7 +405,7 @@ def main():
        #----------------------Draw all the images----------------------------#                 
             loseScreen.draw(screen) # draws image on screen
             restartButton.draw(screen) # draws restart button on screen
-            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (300, 460)) # displays text on specific coords
+            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
 
         pygame.display.flip()
         

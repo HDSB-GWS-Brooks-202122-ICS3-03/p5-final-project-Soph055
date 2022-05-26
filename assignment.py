@@ -57,7 +57,7 @@ class Player(): # player class
      # Parameters
      # ----------
      # none
-     
+
      # Returns
      #-------
      # none
@@ -68,7 +68,14 @@ class Player(): # player class
                 self.pos[0] -= self.speed #moves left on x axis             
    
         
-    def draw(self, screen): # draws player 
+    def draw(self, screen): # draws player
+     # Parameters
+     # ----------
+     # screen : variable # double check 
+
+     # Returns
+     #-------
+     # none
         tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
         tempSurface.fill((1,255,1))             # makes black background colour for temp surface
         tempSurface.set_colorkey((1,255,1))     #Set the color black to be transparent
@@ -95,6 +102,15 @@ class Bullet(): # bullet class
         self.state = "Ready" # bullet state
         
     def shoot(self,screen,x,y):
+     # Parameters
+     # ----------
+     # screen : variable # double check
+     # x : int
+     # y : int
+     
+     # Returns
+     #-------
+     # none
         if self.posx >= 799  : # if x of bullet bigger than screensize
             self.posx = 30 # set x back to 30 
             self.state = "Ready" # sets state back to ready
@@ -111,6 +127,15 @@ class Bullet(): # bullet class
         
 class Zombie():  # zombie class 
     def __init__(self,xPos,yPos,speed):
+     # Parameters
+     # ----------
+     # speed: int
+     # xPos : int
+     # yPos : int
+     
+     # Returns
+     #-------
+     # none
         self.rect = [0,0,131,144] # rect of image, from paint
         self.pos = [xPos,yPos] # sets y and x coords to number inputted when creating zombie
         self.speed = speed # sets speed to inputed speed
@@ -122,6 +147,14 @@ class Zombie():  # zombie class
         self.frameCount = 0
         
     def walk(self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
+        
         if self.move == True: # if zombie is moving 
             self.image = zombWalk[self.moveFrame] # draws certain image from list depending on number that moveframe is at the time
             self.pos[0] -= self.speed # makes zombie move left by subtracting speed
@@ -142,6 +175,13 @@ class Zombie():  # zombie class
             self.moveFrame += 1 # adds 1 to move frame
             
     def draw(self, screen): # draws zombie
+     # Parameters
+     # ----------
+     # screen : string ## double check
+     
+     # Returns
+     #-------
+     # None 
        
         tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
         tempSurface.fill((255,255,255))             # makes white background colour for temp surface
@@ -154,28 +194,36 @@ class Background(): # background screens class
     def __init__(self, Image, xPos, yPos): # object variables
      # Parameters
      # ----------
-     # image : ?
+     # image : pygame.image 
      # xPos : int
      # yPos : int
      
      # Returns
      #-------
-     # none???
+     # none
+     
         self.image = Image # self image is set to whatever image inputed when creating object
         self.pos = [xPos, yPos] # self position is set to number inputed from object variable 
         
     def draw(self,screen):
      # Parameters
      # ----------
-     # screen : string
+     # screen : string # double check 
      
      # Returns
      #-------
-     # draws screen
+     # none
         screen.blit(self.image, self.pos) #draws screen 
     
 class Buttons():
     def __init__(self, left, top, width, height, colour):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
         self.size = [left, top, width, height]
         self.colour = colour
         self.touching = False
@@ -186,6 +234,13 @@ class Buttons():
         self.increaseLeft = self.size[0] - 10
         
     def collide (self):
+     # Parameters
+     # ----------
+     # none
+     
+     # Returns
+     #-------
+     # none
         if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]) and (pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]) :
 #             if(pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]): # when tried putting in two lines, it would not wokmr
                 
@@ -210,6 +265,13 @@ class Buttons():
         
         
     def draw(self, screen):
+     # Parameters
+     # ----------
+     # screen : variable ## DOUBLE CHECKS
+     
+     # Returns
+     #-------
+     # none
         pygame.draw.rect(screen, self.colour, self.size)
         
 def main():

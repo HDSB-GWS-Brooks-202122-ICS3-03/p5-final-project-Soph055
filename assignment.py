@@ -71,7 +71,7 @@ class Player(): # player class
     def draw(self, screen): # draws player
      # Parameters
      # ----------
-     # screen : variable # double check 
+     # screen : variable 
 
      # Returns
      #-------
@@ -104,7 +104,7 @@ class Bullet(): # bullet class
     def shoot(self,screen,x,y):
      # Parameters
      # ----------
-     # screen : variable # double check
+     # screen : variable
      # x : int
      # y : int
      
@@ -144,7 +144,7 @@ class Zombie():  # zombie class
         
         # image animation variables
         self.frameRate = 10 # frame rate for animation
-        self.frameCount = 0
+        self.frameCount = 0 # frame count
         
     def walk(self):
      # Parameters
@@ -177,7 +177,7 @@ class Zombie():  # zombie class
     def draw(self, screen): # draws zombie
      # Parameters
      # ----------
-     # screen : string ## double check
+     # screen : variable
      
      # Returns
      #-------
@@ -191,7 +191,7 @@ class Zombie():  # zombie class
 
 
 class Background(): # background screens class
-    def __init__(self, Image, xPos, yPos): # object variables
+    def __init__(self, Image, xPos, yPos): 
      # Parameters
      # ----------
      # image : pygame.image 
@@ -203,32 +203,36 @@ class Background(): # background screens class
      # none
      
         self.image = Image # self image is set to whatever image inputed when creating object
-        self.pos = [xPos, yPos] # self position is set to number inputed from object variable 
+        self.pos = [xPos, yPos] # self position is set to number inputed  
         
     def draw(self,screen):
      # Parameters
      # ----------
-     # screen : string # double check 
+     # screen : variable 
      
      # Returns
      #-------
      # none
-        screen.blit(self.image, self.pos) #draws screen 
+        screen.blit(self.image, self.pos) #draws/displays background image on screen 
     
 class Buttons():
     def __init__(self, left, top, width, height, colour):
      # Parameters
      # ----------
-     # none
+     # left : int
+     # top : int
+     # width : int
+     # height : int
+     # colour : int
      
      # Returns
      #-------
      # none
-        self.size = [left, top, width, height]
-        self.colour = colour
-        self.touching = False
+        self.size = [left, top, width, height] #sets self to size to number of left,top,width,height inputted
+        self.colour = colour # sets self colour to colour
+        self.touching = False # initial touching is false (so when mouse not touching button)
 
-        self.increaseWidth = self.size[3] + 20
+        self.increaseWidth = self.size[3] + 20 #new varible of increased width, height, top, left based using self size + a number
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
         self.increaseLeft = self.size[0] - 10
@@ -241,42 +245,41 @@ class Buttons():
      # Returns
      #-------
      # none
-        if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]) and (pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]) :
-#             if(pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]): # when tried putting in two lines, it would not wokmr
+        if (pygame.mouse.get_pos()[0]>= self.size[0]) and (pygame.mouse.get_pos()[0]<= self.size[0] + self.size[2]): # if mouse x is between rectangle left and width...
+            if (pygame.mouse.get_pos()[1] >= self.size[1]) and (pygame.mouse.get_pos()[1] <= self.size[1] + self.size[3]): # if mouse y is between rectangle height and top...
                 
-            self.size[0] = self.increaseLeft
-            self.size[1] = self.increaseTop
-            
-            self.size[2] = self.increaseHeight
-            self.size[3] = self.increaseWidth
-            self.touching = True
+                self.size[0] = self.increaseLeft # sets button size left to increasedleft size
+                self.size[1] = self.increaseTop # sets button size top to increasedtop size
+                
+                self.size[2] = self.increaseHeight # sets button size height to increasedheight size
+                self.size[3] = self.increaseWidth #sets button size widths to increasedwidth size
+                self.touching = True # self touching is set to true 
 
-                         
-        else:
-            self.size[0] = self.increaseLeft + 10
-            self.size[1] = self.increaseTop +10
-            
-            self.size[2] = self.increaseHeight - 20
-            self.size[3] = self.increaseWidth - 20
-            self.touching = False
+                             
+            else: # mouse not on button 
+                self.size[0] = self.increaseLeft + 10 # sets self to size back to original size ( by using self.increased value and subtracting number previously added above)
+                self.size[1] = self.increaseTop +10 # sets top back to original size
+                
+                self.size[2] = self.increaseHeight - 20 # sets height back to original size
+                self.size[3] = self.increaseWidth - 20 # sets width back to original size
+                self.touching = False # self touching is set to false
 
-               
- 
+                   
+     
         
         
     def draw(self, screen):
      # Parameters
      # ----------
-     # screen : variable ## DOUBLE CHECKS
+     # screen : variable 
      
      # Returns
      #-------
      # none
-        pygame.draw.rect(screen, self.colour, self.size)
+        pygame.draw.rect(screen, self.colour, self.size) # draws button
         
 def main():
     #-----------------------------Setup------------------------------------------------#
-    """ Set up the game and run the main game loop """
     pygame.init()      # Prepare the pygame module for use
     surfaceSize = 800   # Desired physical surface size, in pixels.
     surfaceSize2 = 600
@@ -294,24 +297,24 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    zombie = Zombie(700,425,1) # creates zombie from zombie class
+    zombie = Zombie(700,425,1) # creates zombie from zombie class using x, y and speed inputted
     player = Player() # creates player from Player class
     bullet = Bullet() # creates bullet from Bullet class
-    gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using information inputted
+    gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using image and position inputed
     
     #start screen variables
-    startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using information inputted
-    startButton = Buttons(250,250, 300, 75 ,(14,23,28))
-    helpButton = Buttons(250,450, 300, 75 ,(14,23,28))
+    startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using image and position inputed
+    startButton = Buttons(250,250, 300, 75 ,(14,23,28)) # creates button from Button class using, left, top, width, height and colour inputted
+    helpButton = Buttons(250,450, 300, 75 ,(14,23,28))# creates button from Button class using, left, top, width, height and colour inputted
     
     #how to play varibles
-    helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using information inputted
-    backButton = Buttons(250,450, 300, 75 ,(14,23,28))
+    helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using image and position inputed
+    backButton = Buttons(250,450, 300, 75 ,(14,23,28))# creates button from Button class using, left, top, width, height and colour inputted
 
     #lose screen  + win screen variables
-    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100) # creates loseScreen from background class using image, x , y inputted
-    winScreen = Background(pygame.image.load("images/win.jpg"), -90, -150)
-    restartButton = Buttons(250,450, 300, 75 ,(14,23,28)) # creates a restartbutton from Buttons class using x,y,width,height inputted
+    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100) # creates losescreen from background class using image and position inputed
+    winScreen = Background(pygame.image.load("images/win.jpg"), -90, -150) # creates winscreen from background class using image and position inputed
+    restartButton = Buttons(250,450, 300, 75 ,(14,23,28)) # # creates button from Button class using, left, top, width, height and colour inputted
     
     
    
@@ -322,7 +325,7 @@ def main():
         ev = pygame.event.poll()    # Look for any event
         if ev.type == pygame.QUIT:  # Window close button clicked?
             break                   # leave game loop
-        elif ev.type == pygame.KEYDOWN:          # if key down..
+        elif ev.type == pygame.KEYDOWN: # if key down..
             if ev.key == pygame.K_a or ev.key == pygame.K_LEFT: # if pressing left key/a..
                 player.direction = "Left" # sets player direction to left
                 player.move = True # sets player movement to true
@@ -331,8 +334,8 @@ def main():
                 player.move = True #sets player movement to true
             elif ev.key == pygame.K_SPACE:# if space button pressed
                 if player.direction == "Right": # if player is looking right
-                    bullet.state = "Fire" # bullet state is change to fire
-                else: #put some text like hey dont shoot that way, you will hurt the villagers behind you
+                    bullet.state = "Fire" # bullet state changes to fire
+                else: #put some text like hey dont shoot that way, you will hurt the villagers behind you ###################FINISH THIS
                     pass
         elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
             # startscreen buttons collision
@@ -344,12 +347,12 @@ def main():
             #helpscreen button collision
             elif gameState == "Help": #if on help screen
                 if backButton.touching == True: #if mouse clicked on rectangle
-                    gameState = "Start" # sets gamestate to start
+                    gameState = "Start" # sets gamestate to start   
+                
             #lose/win screen button collison
             elif gameState == "Lose" or "Win": # if on win or lose screen..
                 if restartButton.touching == True:# if mouse clicked on rectangle
-                    gameState = "Start" # sets gamestate to start screen
-            
+                    gameState = "Start" # sets gamestate to start screen 
 
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
@@ -392,6 +395,9 @@ def main():
         
             
         elif gameState == "Game":  # if gamestate is game
+            startButton.touching == False # sets all buttons touching to false everytime on gamescreen
+            backButton.touching == False
+            helpButton.touching == False
         
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           

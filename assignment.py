@@ -46,7 +46,6 @@ class Player(): # player class
         self.speed = 3 #player speed 
         self.direction = "Right" # players direction
         self.move = False # player cannot move initially
-        self.shoot = False # player is not shooting gun
         
         # image animation variables
         self.patchNumber = 0 # intial patch number
@@ -115,12 +114,13 @@ class Bullet(): # bullet class
             self.posx = 30 # set x back to 30 
             self.state = "Ready" # sets state back to ready
         elif self.state == "Fire": # if bullet state fire..
-            self.posx  += self.speed # adds speed of bullet to x positon 
+            self.posx  += self.speed # adds speed of bullet to x positon
             tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
             tempSurface.fill((255,255,255))             # makes white background colour for temp surface
             tempSurface.set_colorkey((255,255,255))     #Set the color white to be transparent
             tempSurface.blit(self.image, (0,0),  self.rect) # on temp surface draws image
             screen.blit(tempSurface, (x+25,y)) # draws screen
+            
 
     
     
@@ -168,7 +168,6 @@ class Zombie():  # zombie class
      # Returns
      #-------
      # none
-     
         if self.moveFrame > 8: # if moveframe is greater than 8, sets back to 0 
             self.moveFrame = 0
         elif (self.frameCount % self.frameRate == 0): # only change animtion once every 10 frames
@@ -182,7 +181,6 @@ class Zombie():  # zombie class
      # Returns
      #-------
      # None 
-       
         tempSurface = pygame.Surface( (self.rect[2], self.rect[3]) ) #Makes a temp Surface using the width and height of the rect
         tempSurface.fill((255,255,255))             # makes white background colour for temp surface
         tempSurface.set_colorkey((255,255,255))     #Set the color white to be transparent
@@ -201,7 +199,6 @@ class Background(): # background screens class
      # Returns
      #-------
      # none
-     
         self.image = Image # self image is set to whatever image inputed when creating object
         self.pos = [xPos, yPos] # self position is set to number inputed  
         
@@ -264,10 +261,6 @@ class Buttons():
                 self.size[3] = self.increaseWidth - 20 # sets width back to original size
                 self.touching = False # self touching is set to false
 
-                   
-     
-        
-        
     def draw(self, screen):
      # Parameters
      # ----------
@@ -281,9 +274,11 @@ class Buttons():
 def main():
     #-----------------------------Setup------------------------------------------------#
     pygame.init()      # Prepare the pygame module for use
+    mixer.init()        # music module
+    
+    pygame.mixer.music.set_volume(0.2) # volume
     surfaceSize = 800   # Desired physical surface size, in pixels.
     surfaceSize2 = 600
-    
     clock = pygame.time.Clock()  #Force frame rate to be slower
     screen = pygame.display.set_mode((surfaceSize, surfaceSize2)) # creates screen
     pygame.display.set_caption("Zombie OutCry") # sets caption of screen
@@ -333,27 +328,43 @@ def main():
                 player.direction = "Right" # sets player direction to right
                 player.move = True #sets player movement to true
             elif ev.key == pygame.K_SPACE:# if space button pressed
-                if player.direction == "Right": # if player is looking right
-                    bullet.state = "Fire" # bullet state changes to fire
+                if gameState == "Game": # if on game screen
+                    if player.direction == "Right": # if player is looking right
+                        bullet.state = "Fire" # bullet state changes to fire
+                        if bullet.posx + player.pos[0] == player.pos[0] + 30: # if bulletx + player x is = to starting base positon of bullet(behind gun, which is player pos + 30)...
+                            mixer.music.load("images/gunshot.wav") # loads gun shot sound affect
+                            pygame.mixer.music.play(0) # plays gunshot sound affect
+           
                 else: #put some text like hey dont shoot that way, you will hurt the villagers behind you ###################FINISH THIS
                     pass
+                
         elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
             # startscreen buttons collision
             if gameState == "Start": # if on start screen...
-                if startButton.touching == True: # if mouse clicked while on rectangle...
+                if startButton.touching == True:# if mouse clicked while on rectangle...
                     gameState = "Game" # sets gamestate to game
+                    mixer.music.load("images/button.wav") # loads button click
+                    pygame.mixer.music.play(0) # plays button click
+                    
                 elif helpButton.touching == True:# if mouse clicked while on rectangle...
                     gameState = "Help" # sets gamestate to help
+                    mixer.music.load("images/button.wav") # loads button click
+                    pygame.mixer.music.play(0) # plays button click
+            
             #helpscreen button collision
             elif gameState == "Help": #if on help screen
                 if backButton.touching == True: #if mouse clicked on rectangle
-                    gameState = "Start" # sets gamestate to start   
+                    gameState = "Start" # sets gamestate to start
+                    mixer.music.load("images/button.wav") # loads button click
+                    pygame.mixer.music.play(0) # plays button click
                 
             #lose/win screen button collison
-            elif gameState == "Lose" or "Win": # if on win or lose screen..
+            elif gameState == "Lose" or gameState == "Win": # if on win or lose screen..
                 if restartButton.touching == True:# if mouse clicked on rectangle
-                    gameState = "Start" # sets gamestate to start screen 
-
+                    gameState = "Start" # sets gamestate to start screen
+                    mixer.music.load("images/button.wav") # loads button click
+                    pygame.mixer.music.play(0) # plays button click
+                    
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
                 
@@ -363,31 +374,22 @@ def main():
             player.pos[0] = 100
             zombiesLeft = 20
             life = 3
-            
         #----------------------collision----------------------------#
             startButton.collide()  
             helpButton.collide()
-            
-            
         #----------------------drawing----------------------------#
-            
-
             startScreen.draw(screen) # displays image on screen
             startButton.draw(screen) # displays button on screen
             helpButton.draw(screen)  # displays button on screen
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
             screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
             screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
-            
-                         
-       
         
         
         elif gameState == "Help":
         #----------------------collision----------------------------#
             backButton.collide()
         #----------------------drawing----------------------------#    
-            
             helpScreen.draw(screen) # displays image on screen
             backButton.draw(screen) # displays button on screen
             screen.blit(fontMid.render(('Back'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
@@ -395,10 +397,6 @@ def main():
         
             
         elif gameState == "Game":  # if gamestate is game
-            startButton.touching == False # sets all buttons touching to false everytime on gamescreen
-            backButton.touching == False
-            helpButton.touching == False
-        
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
                 if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
@@ -414,16 +412,17 @@ def main():
             
             if life == 0: #if no lives left
                 gameState = "Lose" # switches to lose screen
+                mixer.music.load("images/lose.wav") # loads lose music
+                pygame.mixer.music.play(0) # plays lose music
+                
             elif zombiesLeft == 0: # if no zombies left
                 gameState = "Win" # sets gamestate to win
-                
-                
-                
+                mixer.music.load("images/win.wav") # loads win music
+                pygame.mixer.music.play(0) # plays win music 
                 
         #----------------------Game collision----------------------------#
- 
             # zombie collison 
-            if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal to zombie x... if bullet hits zombie
+            if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal/greater than zombie x... if bullet hits zombie
                 bullet.state = "Ready" #sets bullet to idle ready state
                 bullet.posx = 30 # resets bullet position x
                 zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
@@ -443,24 +442,21 @@ def main():
                 player.pos[0] = 1 # sets positon to number so player cant move past screen
                               
         #----------------------Draw all the images----------------------------#
-                
             gameScreen.draw(screen)
             bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
             player.draw(screen)
             player.walk()
-
             zombie.walk()
             zombie.update()
             zombie.draw(screen)
             
             remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
-            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives
-            
+            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives 
             screen.blit(remaining, (80,110)) # displays it on specific coords
             screen.blit(lives, (100,140)) # displays it on specific coords
             
         elif gameState == "Win":
-            
+        
             restartButton.collide()
             
             winScreen.draw(screen)
@@ -468,7 +464,6 @@ def main():
             screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
        #----------------------Draw all the images----------------------------#     
         elif gameState == "Lose":
-    
             restartButton.collide()
        #----------------------Draw all the images----------------------------#                 
             loseScreen.draw(screen) # draws image on screen

@@ -292,24 +292,24 @@ def main():
     # game screen variables
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
-    zombie = Zombie(700,425,1) # creates zombie from zombie class using x, y and speed inputted
-    player = Player() # creates player from Player class
-    bullet = Bullet() # creates bullet from Bullet class
-    gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen from background class using image and position inputed
+    zombie = Zombie(700,425,1) # creates zombie object  from zombie class using x, y and speed assigned
+    player = Player() # creates player object from Player class
+    bullet = Bullet() # creates bullet object from Bullet class
+    gameScreen = Background(pygame.image.load("images/gamescreen.png"),0,0) # creates gamescreen object from background class using image and position assigned
     
     #start screen variables
-    startScreen = Background(pygame.image.load("images/start.jpg"),0,0) # creates startscreen from background class using image and position inputed
-    startButton = Buttons(250,250, 300, 75 ,(14,23,28)) # creates button from Button class using, left, top, width, height and colour inputted
-    helpButton = Buttons(250,450, 300, 75 ,(14,23,28))# creates button from Button class using, left, top, width, height and colour inputted
+    startScreen = Background(pygame.image.load("images/start.jpg"),0,0) #creates startscreen object from background class using image and position assigned
+    startButton = Buttons(250,250, 300, 75 ,(14,23,28)) #creates button object from Button class using, left, top, width, height and colour assigned
+    helpButton = Buttons(250,450, 300, 75 ,(14,23,28))#creates button object from Button class using, left, top, width, height and colour assigned
     
     #how to play varibles
-    helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen from background class using image and position inputed
-    backButton = Buttons(250,450, 300, 75 ,(14,23,28))# creates button from Button class using, left, top, width, height and colour inputted
+    helpScreen = Background(pygame.image.load("images/howtoplay.png"),0,0) # creates helpscreen object from background class using image and position assigned
+    backButton = Buttons(250,450, 300, 75 ,(14,23,28))# creates button object from Button class using, left, top, width, height and colour assigned
 
     #lose screen  + win screen variables
-    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100) # creates losescreen from background class using image and position inputed
-    winScreen = Background(pygame.image.load("images/win.jpg"), -90, -150) # creates winscreen from background class using image and position inputed
-    restartButton = Buttons(250,450, 300, 75 ,(14,23,28)) # # creates button from Button class using, left, top, width, height and colour inputted
+    loseScreen  = Background(pygame.image.load("images/losescreen.jpg"),-250,-100) # creates losescreen object from background class using image and pos assigned
+    winScreen = Background(pygame.image.load("images/win.jpg"), -90, -150) # creates winscreen objectfrom background class using image and position assigned
+    restartButton = Buttons(250,450, 300, 75 ,(14,23,28)) # # creates button object from Button class using, left, top, width, height and colour assigned
     
     
    
@@ -390,13 +390,13 @@ def main():
         #----------------------collision----------------------------#
             backButton.collide()
         #----------------------drawing----------------------------#    
-            helpScreen.draw(screen) # displays image on screen
-            backButton.draw(screen) # displays button on screen
+            helpScreen.draw(screen) # runs draw method from buttonclass for helpscreen button   
+            backButton.draw(screen) # runs draw method from buttonclass for backbutton
             screen.blit(fontMid.render(('Back'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
 
         
             
-        elif gameState == "Game":  # if gamestate is game
+        elif gameState == "Game":  # if gamestate is game...
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
                 if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
@@ -422,10 +422,10 @@ def main():
                 
         #----------------------Game collision----------------------------#
             # zombie collison 
-            if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal/greater than zombie x... if bullet hits zombie
+            if player.pos[0] + bullet.posx >= zombie.pos[0]: # if bullet x is equal/greater than zombie x... (if bullet hits zombie)
                 bullet.state = "Ready" #sets bullet to idle ready state
                 bullet.posx = 30 # resets bullet position x
-                zombiesLeft -= 1 # subtracts 1 each time player shoot a zombie
+                zombiesLeft -= 1 # subtracts 1 each time player shoots a zombie
                 zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
                 zombie.speed = (random.randint(1,11)) # gives zombie random speed
                 
@@ -435,42 +435,49 @@ def main():
                 zombie.speed = (random.randint(1,11)) # gives zombie random speed  
             
             # screen collison    
-            elif player.pos[0] >= 694: # if player x pos greater then screen size
-                player.pos[0] = 694 # sets positon to number so player cant move past screen
+            elif player.pos[0] >= 694: # if player x pos greater than screen size
+                player.pos[0] = 694 # sets positon to edge of screen so player cant move past screen
                  
-            elif player.pos[0] <= 1: # if player x pos smalled then screen size
-                player.pos[0] = 1 # sets positon to number so player cant move past screen
+            elif player.pos[0] <= 1: # if player x pos smaller than screen size
+                player.pos[0] = 1 # sets positon to edge of screen so player cant move past screen
                               
         #----------------------Draw all the images----------------------------#
-            gameScreen.draw(screen)
-            bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy)
-            player.draw(screen)
-            player.walk()
-            zombie.walk()
-            zombie.update()
-            zombie.draw(screen)
+            gameScreen.draw(screen) # runs draw method from background class for gameScreen
             
+            #For Player Object
+            bullet.shoot(screen,player.pos[0] + bullet.posx,bullet.posy) # runs shoot method from bullet class
+            player.draw(screen) # runs draw methond from playerclass
+            player.walk() # runs walk method from player class
+            
+            #For Zombie Object
+            zombie.walk() # runs walk method from zombieclass
+            zombie.update() # runs update method from zombieclass
+            zombie.draw(screen) # runs draw method from zombieclass
+            
+            # Text for game screen
             remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
             lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives 
             screen.blit(remaining, (80,110)) # displays it on specific coords
             screen.blit(lives, (100,140)) # displays it on specific coords
             
-        elif gameState == "Win":
+        elif gameState == "Win": # if gamestate is win...
         
-            restartButton.collide()
-            
-            winScreen.draw(screen)
-            restartButton.draw(screen) # draws restart button on screen
-            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
+            restartButton.collide()# runs collide method from button class for restartButton
        #----------------------Draw all the images----------------------------#     
-        elif gameState == "Lose":
-            restartButton.collide()
+            winScreen.draw(screen) # runs draw method from background class for winscreen
+            restartButton.draw(screen) # runs draw method from button class for restartbutton
+            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
+       
+            
+        elif gameState == "Lose":# if gamestate is lose...
+            
+            restartButton.collide()#runs collide method from buttonclass for restartbutton
        #----------------------Draw all the images----------------------------#                 
-            loseScreen.draw(screen) # draws image on screen
-            restartButton.draw(screen) # draws restart button on screen
+            loseScreen.draw(screen) # runs draw method from backgroundclass for losescreen
+            restartButton.draw(screen) # runs draw method from buttonclass for restartbutton 
             screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
 
-        pygame.display.flip()
+        pygame.display.flip() 
         
         zombie.frameCount += 1 #adds one every tick 
         frameCount += 1 # adds one every tick

@@ -1,17 +1,18 @@
 #-----------------------------------------------------------------------------
 # Name:        Zombie OutCry (assignment.py)
-# Purpose:     A description of your program goes here.
+# Purpose:     Purpose of game is to defeat the incoming zombie horde 
+#              in order to protect your village and family from 
 #
 # Author:      Mr. Brooks
-# Created:     7-May-2021
+# Created:     31-May-2021
 # Updated:    
 #-----------------------------------------------------------------------------
-#I think this project deserves a level XXXXXX because ...
+#I think this project deserves a level 4 + because ...
 #
 #Features Added:
-#   ...
-#   ...
-#   ...
+#   music sound affects for bullet, lose, win and buttons
+#   detailed help screen with background story for game
+#   Animation of player and zombie 
 #-----------------------------------------------------------------------------
 
 import pygame
@@ -290,6 +291,8 @@ def main():
     gameState = "Start" # intial game state
     
     # game screen variables
+    score = 0 # player score
+    isHuman = False #is human is false
     life = 3 # number of lives player has
     zombiesLeft = 20 # number of zombies left to kill to win game
     zombie = Zombie(700,425,1) # creates zombie object  from zombie class using x, y and speed assigned
@@ -330,13 +333,14 @@ def main():
             elif ev.key == pygame.K_SPACE:# if space button pressed
                 if gameState == "Game": # if on game screen
                     if player.direction == "Right": # if player is looking right
+                        isHuman = False # ishuman is false
                         bullet.state = "Fire" # bullet state changes to fire
                         if bullet.posx + player.pos[0] == player.pos[0] + 30: # if bulletx + player x is = to starting base positon of bullet(behind gun, which is player pos + 30)...
                             mixer.music.load("images/gunshot.wav") # loads gun shot sound affect
                             pygame.mixer.music.play(0) # plays gunshot sound affect
-           
-                else: #put some text like hey dont shoot that way, you will hurt the villagers behind you ###################FINISH THIS
-                    pass
+                    else:
+                        isHuman = True # ishuman is true
+                        
                 
         elif ev.type == pygame.MOUSEBUTTONUP: #if mouse buttonup
             # startscreen buttons collision
@@ -384,6 +388,7 @@ def main():
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
             screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
             screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
+            screen.blit(fontGiant.render((f'score : {score}'), 1, pygame.Color(0,0,0)),(300,300)) # text & score
         
         
         elif gameState == "Help":
@@ -409,6 +414,7 @@ def main():
             elif player.move == False:# if player cannot move, set to patch 4 so it looks like man is standing straight
                 player.patchNumber = 4
                 player.rect =[448,150, 112,62]
+                
             
             if life == 0: #if no lives left
                 gameState = "Lose" # switches to lose screen
@@ -426,11 +432,13 @@ def main():
                 bullet.state = "Ready" #sets bullet to idle ready state
                 bullet.posx = 30 # resets bullet position x
                 zombiesLeft -= 1 # subtracts 1 each time player shoots a zombie
+                score +=30 # adds 30 to score
                 zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
                 zombie.speed = (random.randint(1,11)) # gives zombie random speed
                 
             elif player.pos[0] + 40 >= zombie.pos[0]: # if player x is equal to zombie x... if zombie touches player
                 life -=1 #lose one life
+                score -=100 # subtracts 100 from score
                 zombie.pos[0] = (random.randint(800,810)) # makes zombie have random x position
                 zombie.speed = (random.randint(1,11)) # gives zombie random speed  
             
@@ -455,11 +463,15 @@ def main():
             zombie.draw(screen) # runs draw method from zombieclass
             
             # Text for game screen
-            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) #displays text & number of zombs left
-            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) #displays text & number of lives 
+            remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) # text & number of zombs left
+            lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) # text & number of lives
+            scores = font.render((f'score : {score}'), 1, pygame.Color(0,0,0)) # text & score
             screen.blit(remaining, (80,110)) # displays it on specific coords
             screen.blit(lives, (100,140)) # displays it on specific coords
-            
+            screen.blit(scores, (100, 85))# displays it on specific coords
+            if isHuman == True: # if is human is true
+                screen.blit(font.render(("Don't shoot this way! They are humans"), 1, pygame.Color(0,0,0)), (100, 450)) # displays text on specific coords
+
         elif gameState == "Win": # if gamestate is win...
         
             restartButton.collide()# runs collide method from button class for restartButton

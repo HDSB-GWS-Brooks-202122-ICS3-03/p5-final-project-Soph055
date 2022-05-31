@@ -368,13 +368,19 @@ def main():
                     gameState = "Start" # sets gamestate to start screen
                     mixer.music.load("images/button.wav") # loads button click
                     pygame.mixer.music.play(0) # plays button click
+                
                     
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
                 
         
         if gameState == "Start":
-            # resets zombies and lives, player pos
+            file = open("scoresaved.txt", "r") # opens saved score file 
+            oldScore = file.readline() # reads line
+            file.close() # closes file 
+            
+            # resets zombies and lives, player pos, score
+            score = 0 
             player.pos[0] = 100
             zombiesLeft = 20
             life = 3
@@ -388,7 +394,7 @@ def main():
             screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
             screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
             screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
-            screen.blit(fontGiant.render((f'score : {score}'), 1, pygame.Color(0,0,0)),(300,300)) # text & score
+            screen.blit(fontGiant.render((f'last score : {oldScore}'), 1, pygame.Color(108,16,16)),(200,345)) # text & score
         
         
         elif gameState == "Help":
@@ -401,7 +407,7 @@ def main():
 
         
             
-        elif gameState == "Game":  # if gamestate is game...
+        elif gameState == "Game":  # if gamestate is game...  
         #----------------------Game Logic Goes After Here----------------------------#           
             if player.move == True: # if player can move           
                 if (frameCount % player.FrameRate == 0):    #Only change the animation frame once every 10 frames
@@ -473,6 +479,9 @@ def main():
                 screen.blit(font.render(("Don't shoot this way! They are humans"), 1, pygame.Color(0,0,0)), (100, 450)) # displays text on specific coords
 
         elif gameState == "Win": # if gamestate is win...
+            file = open('scoresaved.txt', 'w') # opens saved score file (and over writes it)
+            file.write(f'{score}') # writes final score 
+            file.close() # closes file
         
             restartButton.collide()# runs collide method from button class for restartButton
        #----------------------Draw all the images----------------------------#     
@@ -482,6 +491,10 @@ def main():
        
             
         elif gameState == "Lose":# if gamestate is lose...
+            
+            file = open('scoresaved.txt', 'w') # opens saved score file (and over writes it)
+            file.write(f'{score}') # writes final score 
+            file.close() # closes file
             
             restartButton.collide()#runs collide method from buttonclass for restartbutton
        #----------------------Draw all the images----------------------------#                 

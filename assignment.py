@@ -7,13 +7,13 @@
 # Created:     31-May-2021
 # Updated:    
 #-----------------------------------------------------------------------------
-#I think this project deserves a level 4 + because i met all level 3 requirements and level 4
+#I think this project deserves a level 4 + because i met all level 3 requirements and level 4 reqs
 # + added many more features to make the game better. 
 #
 #Features Added:
 #   music sound affects for bullet, lose, win and buttons
 #   detailed self made help screen with background story for game
-#   Animation of player, zombie and bullet 
+#   Animation of player, zombie and bullet
 #-----------------------------------------------------------------------------
 
 import pygame
@@ -142,7 +142,7 @@ class Zombie():  # zombie class
         self.pos = [xPos,yPos] # sets y and x coords to number inputted when creating zombie
         self.speed = speed # sets speed to inputed speed
         self.move = True # zombie is moving is true
-        self.moveFrame = 0 # represents which number of frame from list will be shown
+        self.moveFrame = 0 # frame of zombie to display
         
         # image animation variables
         self.frameRate = 10 # frame rate for animation
@@ -212,9 +212,9 @@ class Background(): # background screens class
      # Returns
      #-------
      # none
-        screen.blit(self.image, self.pos) #draws/displays background image on screen 
+        screen.blit(self.image, self.pos) #displays background image on screen 
     
-class Buttons():
+class Buttons(): #Button class
     def __init__(self, left, top, width, height, colour):
      # Parameters
      # ----------
@@ -231,7 +231,7 @@ class Buttons():
         self.colour = colour # sets self colour to colour
         self.touching = False # initial touching is false (when mouse not touching button)
 
-        self.increaseWidth = self.size[3] + 20  #new variable of increased width, height, top, left based using self size + a number
+        self.increaseWidth = self.size[3] + 20  #new variable of increased width, height, top, left, using self size + a number
         self.increaseHeight = self.size[2] + 20
         self.increaseTop = self.size[1] - 10
         self.increaseLeft = self.size[0] - 10
@@ -251,7 +251,7 @@ class Buttons():
                 self.size[1] = self.increaseTop # sets button size top to increasedtop size
                 
                 self.size[2] = self.increaseHeight # sets button size height to increasedheight size
-                self.size[3] = self.increaseWidth #sets button size widths to increasedwidth size
+                self.size[3] = self.increaseWidth #sets button size width to increasedwidth size
                 self.touching = True # self touching is set to true 
 
                              
@@ -337,7 +337,7 @@ def main():
                     if player.direction == "Right": # if player is looking right
                         isHuman = False # ishuman is set to false
                         bullet.state = "Fire" # bullet state changes to fire
-                        if bullet.posx + player.pos[0] == player.pos[0] + 30:#if bulletx + playerx is = to starting pos of bullet(behind gun, which is player pos + 30)...
+                        if bullet.posx + player.pos[0] == player.pos[0] + 30:#if bulletx + playerx is = to starting pos of bullet(hidden behind gun, which is player pos + 30)...
                             mixer.music.load("images/gunshot.wav") # loads gun shot sound affect
                             pygame.mixer.music.play(0) # plays gunshot sound affect
                     else:
@@ -350,35 +350,34 @@ def main():
                     gameState = "Game" # sets gamestate to game
                     mixer.music.load("images/button.wav") # loads button click
                     pygame.mixer.music.play(0) # plays button click
-                    
+                 
                 elif helpButton.touching == True:# if mouse clicked while on rectangle...
                     gameState = "Help" # sets gamestate to help
                     mixer.music.load("images/button.wav") # loads button click
                     pygame.mixer.music.play(0) # plays button click
-            
+                    
             #helpscreen button collision
             elif gameState == "Help": #if on help screen
                 if backButton.touching == True: #if mouse clicked on rectangle
                     gameState = "Start" # sets gamestate to start
                     mixer.music.load("images/button.wav") # loads button click
                     pygame.mixer.music.play(0) # plays button click
-                
+                    
             #lose/win screen button collison
             elif gameState == "Lose" or gameState == "Win": # if on win or lose screen..
                 if restartButton.touching == True:# if mouse clicked on rectangle
                     gameState = "Start" # sets gamestate to start screen
                     mixer.music.load("images/button.wav") # loads button click
                     pygame.mixer.music.play(0) # plays button click
-                
                     
         elif ev.type == pygame.KEYUP: # if key up...
             player.move = False # sets player movement to false
                 
         
-        if gameState == "Start":
+        if gameState == "Start": # if gamestate is start...
             file = open("scoresaved.txt", "r") # opens saved score file 
             oldScore = file.readline() # reads line
-            file.close() # closes file 
+            file.close() # closes file
             
             # resets zombies and lives, player pos, score
             score = 0 
@@ -386,23 +385,23 @@ def main():
             zombiesLeft = 20
             life = 3
         #----------------------collision----------------------------#
-            startButton.collide()  
-            helpButton.collide()
+            startButton.collide()# runs collide method from buttonclass for startbutton
+            helpButton.collide() # runs collide method from buttonclass for helpbutton
         #----------------------drawing----------------------------#
-            startScreen.draw(screen) # displays image on screen
-            startButton.draw(screen) # displays button on screen
-            helpButton.draw(screen)  # displays button on screen
-            screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific coords
-            screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific coords
-            screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
-            screen.blit(fontGiant.render((f'last score : {oldScore}'), 1, pygame.Color(108,16,16)),(200,345)) # text & score
+            startScreen.draw(screen) # runs draw method from background class for startscreen
+            startButton.draw(screen) # runs draw method from buttonclass for startbutton
+            helpButton.draw(screen)  # runs draw method from buttonclass for helpbutton
+            screen.blit(fontGiant.render(('Zombie Outcry'), 1, pygame.Color(108,16,16)), (180,110)) # displays text on specific pos
+            screen.blit(fontMid.render(('Start'), 1, pygame.Color(108,16,16)), (350, 260)) # displays text on specific pos
+            screen.blit(fontMid.render(('Help'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific pos
+            screen.blit(fontGiant.render((f'last score : {oldScore}'), 1, pygame.Color(108,16,16)),(200,345)) # displays text on specific pos 
         
         
-        elif gameState == "Help":
+        elif gameState == "Help": # if gamestate is help...
         #----------------------collision----------------------------#
-            backButton.collide()
+            backButton.collide()# runs collide method from buttonclass for backbutton
         #----------------------drawing----------------------------#    
-            helpScreen.draw(screen) # runs draw method from buttonclass for helpscreen button   
+            helpScreen.draw(screen) # runs draw method from background class for helpscreen 
             backButton.draw(screen) # runs draw method from buttonclass for backbutton
             screen.blit(fontMid.render(('Back'), 1, pygame.Color(108,16,16)), (355, 460)) # displays text on specific coords
 
@@ -420,7 +419,7 @@ def main():
                         player.rect[0] -= player.rect[2]*(player.numPatches-1)  #Reset the rect position of the rect back too
             elif player.move == False:# if player cannot move, set to patch 4 so it looks like man is standing straight
                 player.patchNumber = 4
-                player.rect =[448,150, 112,62]
+                player.rect =[448,150, 112,62] 
                 
             
             if life == 0: #if no lives left
@@ -473,22 +472,22 @@ def main():
             remaining = font.render((f'zombies left : {zombiesLeft}'), 1, pygame.Color(0,0,0)) # text & number of zombs left
             lives = font.render((f'lives left : {life}'), 1, pygame.Color(0,0,0)) # text & number of lives
             scores = font.render((f'score : {score}'), 1, pygame.Color(0,0,0)) # text & score
-            screen.blit(remaining, (80,110)) # displays it on specific coords
-            screen.blit(lives, (100,140)) # displays it on specific coords
-            screen.blit(scores, (100, 85))# displays it on specific coords
-            if isHuman == True: # if is human is true
-                screen.blit(font.render(("Don't shoot this way! They are humans"), 1, pygame.Color(0,0,0)), (100, 450)) # displays text on specific coords
+            screen.blit(remaining, (80,110)) # displays it on specific pos
+            screen.blit(lives, (100,140)) # displays it on specific pos
+            screen.blit(scores, (100, 85))# displays it on specific pos
+            if isHuman == True: # if ishuman is true
+                screen.blit(font.render(("Don't shoot this way! They are humans"), 1, pygame.Color(0,0,0)), (100, 450)) # displays text on specific pos
 
         elif gameState == "Win": # if gamestate is win...
             file = open('scoresaved.txt', 'w') # opens saved score file (and over writes it)
             file.write(f'{score}') # writes final score 
             file.close() # closes file
-        
+       #----------------------collision----------------------------#
             restartButton.collide()# runs collide method from button class for restartButton
        #----------------------Draw all the images----------------------------#     
             winScreen.draw(screen) # runs draw method from background class for winscreen
             restartButton.draw(screen) # runs draw method from button class for restartbutton
-            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific coords
+            screen.blit(fontMid.render(('Play Again'), 1, pygame.Color(108,16,16)), (290, 460)) # displays text on specific pos
        
             
         elif gameState == "Lose":# if gamestate is lose...
@@ -496,7 +495,7 @@ def main():
             file = open('scoresaved.txt', 'w') # opens saved score file (and over writes it)
             file.write(f'{score}') # writes final score 
             file.close() # closes file
-            
+       #----------------------collision----------------------------#     
             restartButton.collide()#runs collide method from buttonclass for restartbutton
        #----------------------Draw all the images----------------------------#                 
             loseScreen.draw(screen) # runs draw method from backgroundclass for losescreen
